@@ -20,8 +20,6 @@ def get_means(x, y):
     # Summation
     for pic_index in range(len(x)):
         num = y[pic_index]
-        print(sums_arr[num].shape)
-        print(type(sums_arr[num]))
         sums_arr[num] += x[num]
 
     # Divide by n
