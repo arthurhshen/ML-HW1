@@ -11,14 +11,11 @@ def main():
     y = mat_file['Y']
 
     means = get_means(x, y)
-    print("Means:\nType: {} \nShape: {}".format(type(means), means.shape))
     stds = get_stds(means, x, y)
 
 
 def get_means(x, y):
     sums_arr = np.zeros(shape=(10, len(x[0])), dtype=float)
-    temp = sums_arr[0].reshape(28, 28)
-    print(sums_arr[0].shape)
 
     # Summation
     for pic_index in range(len(x)):
@@ -35,7 +32,6 @@ def get_means(x, y):
 
 def get_stds(means, x, y):
     stds_arr = [np.asmatrix(np.zeros(shape=(28, 28), dtype=float))] * 10
-    print(type(stds_arr[0]))
     for pic_index in range(len(x)):
         num = y[pic_index]
         num_index = num[0]
@@ -45,9 +41,6 @@ def get_stds(means, x, y):
         a = (reshaped_x - reshaped_mean)
         b = np.transpose(reshaped_x - reshaped_mean)
         c = np.asmatrix(a * b)
-        print(num_index)
-        print("stds_arr data:\tShape: {}\tType: {}".format(stds_arr[num_index].shape, type(stds_arr[num_index])))
-        print("C data:\tShape: {}\tType: {}".format(c.shape, type(c)))
         stds_arr[num_index] = np.add(stds_arr[num_index], c)
 
     # divide by n
