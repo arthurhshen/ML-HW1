@@ -17,23 +17,21 @@ def main():
     y_test = mat_file['Y'][9000:]
     
     means = get_means(x_train, y_train)
-    stds = get_stds(means, x_train, y_train)
+    stds = get_covs(means, x_train, y_train)
     priors = get_class_priors(y_train)
     
     probabilities = []
 
     for x in range(len(means)):
-
         a = float(np.linalg.det(stds[x]))
-        print(type(stds[x]))
+        print(a)
         b = 1.0 / math.sqrt(a)
 
         diff = x_test[0] - means[x]
         diff_T = np.transpose(diff)
-        std_inv = numpy.linalg.inv(stds[x])
+        std_inv = np.linalg.inv(stds[x])
 
-        exp = math.exp(-0.5*diff_T*std_inv*diff)
-
+        exp = math.exp(-0.5*(diff_T.dot(std_inv)).dot(diff))
         prob = b*exp
         probabilities.append(prob)
     print(probabilities)
@@ -58,7 +56,7 @@ def get_class_priors(y_train):
 
 def get_means(x_train, y_train):
     counts = np.zeros(10)
-    sums_arr = np.zeros(shape=(10, len(x_train[0])), dtype=float)
+    sums_arr = [np.asmatrix(np.zeros(shape=(784,), dtype=float))] * 10
 
     # Summation
     for i in range(len(x_train)):
@@ -69,30 +67,27 @@ def get_means(x_train, y_train):
     # Divide by n
     for j in range(len(sums_arr)): 
         sums_arr[j] = sums_arr[j] / counts[j]
-        
+
     return sums_arr
 
 
-def get_stds(means, x_train, y_train):
-    stds_arr = [np.asmatrix(np.zeros(shape=(28, 28), dtype=float))] * 10
+def get_covs(means, x_train, y_train):
+    covs_arr = np.zeros((10,784,784), dtype=float)
     counts = np.zeros(10)
     for i in range(len(x_train)):
         label = y_train[i][0]
-        reshaped_x = x_train[i].reshape(28, 28)
-        reshaped_mean = means[label].reshape(28, 28)
 
-        a = (reshaped_x - reshaped_mean)
+        a = x_train[i] - means[label]
         b = np.transpose(a)
-        c = a * b
-
-        stds_arr[label] += c
+        c = a.dot(b)
+        covs_arr[label] += c
         counts[label] += 1
 
     # divide by n
-    for j in range(len(stds_arr)): 
-        stds_arr[j] = stds_arr[j] / counts[j]
+    for j in range(10): 
+        covs_arr[j] = covs_arr[j] / counts[j]
 
-    return stds_arr
+    return covs_arr
 
 
 def read_mat_file():
