@@ -27,10 +27,19 @@ def main():
 
     t0 = time.time()
     MVG_classifier = MVG(X_training_data, Y_training_data)
-    test = MVG_classifier.classify(X[9001])
+
+    count = 0
+    correct = 0
+    for test_var in range(8001, 10000):
+        count += 1
+        test = MVG_classifier.classify(X[test_var])
+        if test == Y[test_var][0]:
+            correct += 1
+
     t1 = time.time()
 
-    print("We got: {}, the correct answer was {}. It took {} seconds".format(test, Y[9001][0], t1 - t0))
+    print("Our accuracy is {}".format(correct / count))
+    #print("We got: {}, the correct answer was {}. It took {} seconds".format(test, Y[9999][0], t1 - t0))
 
 
 if __name__ == '__main__':
