@@ -1,22 +1,15 @@
-import scipy
 import scipy.spatial.distance as sp_dist
-import scipy.io
-import sys
 import numpy as np
-import math
 from scipy.stats import mode
-from helper_func import read_mat_file
-
-import time
 
 
 class kNN:
-
-    def __init__(self, x, y, k=5, metric=None):
+    def __init__(self, x, y, k=10, metric=None):
         self.X = x
         self.Y = y
         self.metric = sp_dist.euclidean
         self.k = k
+        print(k)
 
     def train(self, x=None, y=None, k=None, metic=None):
         if x is not None:
@@ -45,9 +38,7 @@ class kNN:
         # https://docs.scipy.org/doc/numpy/reference/generated/numpy.argpartition.html
         y_indices = np.argpartition(dists, self.k, axis=0)
         y_values = self.Y[y_indices[0:self.k]]
-        label = mode(self.Y[y_indices[0:self.k]]).mode[0]
-        return label
-        # return mode(y_values).mode[0]
+        return mode(y_values)[0][0]
 
     def classify(self, point):
         return self.calc_distance(point)
