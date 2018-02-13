@@ -7,9 +7,15 @@ class kNN:
     def __init__(self, x, y, k=10, metric=None):
         self.X = x
         self.Y = y
-        self.metric = sp_dist.euclidean
+
+        if metric == 'L1':
+            self.metric = sp_dist.cityblock
+        elif metric == 'L_inf':
+            self.metric = sp_dist.chebyshev
+        else:
+            self.metric = sp_dist.euclidean
+
         self.k = k
-        print(k)
 
     def train(self, x=None, y=None, k=None, metic=None):
         if x is not None:
