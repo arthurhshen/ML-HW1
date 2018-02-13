@@ -26,11 +26,21 @@ class MVG:
         return label
 
     def preprocess(self, X, Y):
+        # We will select the 200 "best" features for each number
+        features = -200
         labels = np.unique(Y)
 
         for num in labels:
             X_num = X[Y == num]
-            X_processed, max_indices = self.select_features(X_num)
+
+            # Select the best 200 features
+            complete_cov = np.cov(X_num, rowvar=False)
+            # For each column, take the average
+            avg_cov = np.mean(complete_cov, axis=1)
+
+            max_indices = np.argpartition(avg_cov, features)[features:]
+            X_processed = X_num[:, max_indices]
+
             # Normalize processed matrix
             # https://stackoverflow.com/questions/31152967/normalise-2d-numpy-array-zero-mean-unit-variance
             # had to reshape means - was (250, 0)
@@ -38,10 +48,10 @@ class MVG:
             std = X_processed.std(axis=0)
             X_normed = (X_processed - mean) / std
 
-            # add λI to the covariance matrix for some small λ
+            # add λI to the covariance matrix for some small λ - set λ to 0.5
             means = np.mean(X_normed, axis=0)
             normed_cov = np.cov(X_normed, rowvar=False)
-            normed_cov = normed_cov + 0.5 * np.identity(200)  # introduce bias lambda I to prevent noninvertability of matrix
+            normed_cov = normed_cov + 0.5 * np.identity(200)
 
             # Calculate the distribution for this number
             rv = multivariate_normal(mean=means, cov=normed_cov)
@@ -49,16 +59,3 @@ class MVG:
             prior = X_num.shape[0] / X.shape[0]
 
             self.model[num] = (mean, std, rv, prior, max_indices)
-
-    def select_features(self, X_num):
-        # pick the top 200 features and then drop the rest.
-        features = -200
-
-        complete_cov = np.cov(X_num, rowvar=False)
-        # For each column, take the average
-        avg_cov = np.mean(complete_cov, axis=1)
-
-        max_indices = np.argpartition(avg_cov, features)[features:]
-        processed = X_num[:, max_indices]
-
-        return processed, max_indices
