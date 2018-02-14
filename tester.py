@@ -153,8 +153,8 @@ def main():
     l1 = []
     l2 = []
     l3 = []
-    for i in range(1, 4):
-        length = 5000 + 1000 * i
+    for i in range(1, 7):
+        length = 5000 + 500 * i
         x_axis.append(length)
 
         ind = np.random.permutation(len(X))
@@ -190,9 +190,9 @@ def main():
 
         print("L1 : {}, L2: {}, L3: {}".format(correct_L1 / count, correct_L2 / count, correct_Linf / count))
 
-    plt.plot(x_axis, l1, 'o', label='L1')
-    plt.plot(x_axis, l2, 'o', label='L2')
-    plt.plot(x_axis, l3, 'o', label='L_inf')
+    plt.plot(x_axis, l1, 'g^', label='L1')
+    plt.plot(x_axis, l2, 'bs', label='L2')
+    plt.plot(x_axis, l3, 'r--', label='L_inf')
     plt.show()
 
     t1 = time.time()
