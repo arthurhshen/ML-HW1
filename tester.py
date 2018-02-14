@@ -18,7 +18,7 @@ def main():
     mat_file = sys.path[0] + "/hw1data.mat"
     mat_data = scipy.io.loadmat(mat_file)
     N = len(mat_data['X'])
-    '''
+
     X = mat_data['X']
     Y = mat_data['Y']
     x = 0
@@ -76,9 +76,8 @@ def main():
     plt.plot(segments, accuracies_knn, 'x', label='kNN Clasifier') 
     
     plt.show()
-    '''
 
-    
+    '''
     # size of training data vs accuracy 
     x = 0
     for s in split:
@@ -140,7 +139,7 @@ def main():
     #t1 = time.time()
     plt.plot(split, accuracies, 'o') 
     plt.show()
- 
+ '''   
 
 if __name__ == '__main__':
     main()
